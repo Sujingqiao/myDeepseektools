@@ -1,0 +1,254 @@
+// ===================================================================
+// LLM 架构本体论：精细化指标系统（Refined Ontology for LLM Design）
+// 每个枚举代表一个可独立配置的“设计原语”或“工程策略”
+// 用于模型归档、对比分析、自动化评估
+// ===================================================================
+// 文件名: LLM_INDICATORS_REFINED.h
+// ===================================================================
+
+#ifndef LLM_INDICATORS_REFINED_H
+#define LLM_INDICATORS_REFINED_H
+
+// ===================================================================
+// 1. 信息流控制 (Information Flow Control)
+// 控制梯度与信号在深层网络中的传播方式
+// ===================================================================
+typedef enum {
+    NORM_PRE,                   // Pre-Layer Normalization
+    NORM_POST,                  // Post-Layer Normalization
+    RESIDUAL_SCALE,             // Residual Connection Scaling (e.g., 0.1)
+    RESIDUAL_STOCHASTIC,        // Stochastic Depth / DropPath
+    INIT_SCALE,                 // Weight Initialization Scale
+    INIT_TYPE,                  // Initialization Type (Xavier, Normal, etc.)
+    DEEPNORM_APPLY,             // DeepNorm Applied
+    INFO_FLOW_COUNT
+} InformationFlowControl;
+
+
+// ===================================================================
+// 2. 优化动力学 (Optimization Dynamics)
+// 训练过程中的优化策略与数值配置
+// ===================================================================
+typedef enum {
+    OPTIMIZER,                  // Optimizer Choice (AdamW, Lion, DAdapt)
+    WEIGHT_DECAY_RATE,          // Weight Decay
+    LR_SCHEDULE,                // Learning Rate Schedule (Cosine, Linear)
+    LR_WARMUP_STEPS,            // Warmup Steps
+    GRADIENT_CLIP_NORM,         // Gradient Clipping Threshold
+    MIXED_PRECISION_MODE,       // FP16, BF16, AMP
+    OPTIM_DYNAMICS_COUNT
+} OptimizationDynamics;
+
+
+// ===================================================================
+// 3. 表示学习 (Representation Learning)
+// 词元化与嵌入层设计
+// ===================================================================
+typedef enum {
+    TOKENIZER_ALGORITHM,        // BPE, SentencePiece, Unigram
+    VOCABULARY_SIZE,            // Number of Tokens
+    SPECIAL_TOKEN_SET,          // Special Tokens (e.g., <|im_start|>)
+    EMBEDDING_TIED,             // Tied Input-Output Embeddings
+    SUBWORD_REGULARIZATION_ON,  // Subword Regularization Enabled
+    REPR_LEARNING_COUNT
+} RepresentationLearning;
+
+
+// ===================================================================
+// 4. 位置编码与外推 (Position Encoding & Extrapolation)
+// 位置信息建模与长上下文扩展
+// ===================================================================
+typedef enum {
+    POS_ENCODING_TYPE,          // RoPE, ALiBi, Absolute, T5Bias
+    ROPE_BASE_FREQ,             // RoPE Base θ (e.g., 10000, 500000)
+    CONTEXT_EXT_METHOD,         // NTK-Aware, YaRN, Position Interpolation
+    MAX_POSITIONS_CONFIG,       // Configured Max Positions
+    CONTEXT_WINDOW_LENGTH,      // Effective Context Window (e.g., 32768)
+    POS_ENCODING_COUNT
+} PositionEncodingExtrapolation;
+
+
+// ===================================================================
+// 5. 注意力机制 (Attention Mechanism)
+// 注意力结构变体
+// ===================================================================
+typedef enum {
+    ATTENTION_TYPE,             // MHA, GQA, MQA, Sparse
+    SPARSE_PATTERN,             // Block-Sparse, Local, Routing
+    ATTENTION_IMPLEMENTATION,   // FlashAttention, Fused Kernel
+    KV_CACHE_QUANTIZE,          // KV Cache Quantization (INT8)
+    KV_CACHE_COMPRESS,          // KV Cache Compression (e.g., Squeeze)
+    EARLY_EXIT_ACTIVE,          // Early Exit / Speculative Drafting
+    ATTENTION_MECH_COUNT
+} AttentionMechanism;
+
+
+// ===================================================================
+// 6. 前馈网络 (Feed-Forward Network)
+// FFN 结构设计
+// ===================================================================
+typedef enum {
+    FFN_TYPE,                   // MLP, SwiGLU, GEGLU, SoLU
+    FFN_GATING_ACT,             // Gating Activation (SiLU, GELU)
+    INTERMEDIATE_SIZE_CONFIG,   // FFN Intermediate Dimension
+    MOE_ENABLE,                 // Mixture-of-Experts
+    MOE_ROUTER,                 // Router Algorithm (TopK, Soft)
+    MOE_EXPERT_COUNT,           // Number of Experts
+    MOE_CAPACITY_FACTOR,        // Load Balancing Factor
+    FFN_ARCH_COUNT
+} FeedForwardNetwork;
+
+
+// ===================================================================
+// 7. 数据策略 (Data Strategy)
+// 训练数据构成与处理
+// ===================================================================
+typedef enum {
+    DATA_MIX_RATIO,             // Text/Code/Dialogue Proportions
+    DOMAIN_COVERAGE_SET,        // Covered Domains (e.g., Legal, Bio)
+    DATA_DEDUPLICATION_LEVEL,   // Exact/Near Dedup
+    TEXT_CLEANING_PIPELINE_ID,  // Cleaning Heuristics Used
+    DATA_AUGMENTATION_METHODS,  // Backtranslation, Noise Injection
+    DATA_QUALITY_SCORE_EST,     // Estimated Quality Score
+    DATA_STRATEGY_COUNT
+} DataStrategy;
+
+
+// ===================================================================
+// 8. 模型架构参数 (Model Architecture Parameters)
+// 核心结构尺寸（原子级标量）
+// ===================================================================
+typedef enum {
+    NUM_TRANSFORMER_LAYERS,     // Depth
+    HIDDEN_STATE_DIM,           // Width (d_model)
+    ATTENTION_HEAD_COUNT,       // Number of Heads
+    HEAD_DIM_IMPLIED,           // Head Dimension (d_model / n_heads)
+    FFN_MULTIPLIER,             // Expansion Ratio (e.g., 4x, 8x)
+    ARCH_TYPE,                  // Decoder-only, Encoder-decoder, PrefixLM
+    MODEL_ARCH_PARAMS_COUNT
+} ModelArchitectureParameters;
+
+
+// ===================================================================
+// 9. 训练并行策略 (Training Parallelism)
+// 分布式训练配置
+// ===================================================================
+typedef enum {
+    PARALLEL_MODE_ZERO,         // ZeRO Stage (0,1,2,3)
+    TENSOR_PARALLEL_DEGREE,     // TP Size
+    PIPELINE_PARALLEL_DEGREE,   // PP Size
+    FSDP_ENABLE,                // Fully Sharded Data Parallel
+    SEQUENCE_PARALLEL,          // Sequence Parallelism
+    TRAIN_PARALLEL_COUNT
+} TrainingParallelism;
+
+
+// ===================================================================
+// 10. 训练执行配置 (Training Execution Config)
+// 批大小与序列长度
+// ===================================================================
+typedef enum {
+    GLOBAL_BATCH_SIZE,          // Total Batch Size
+    MICRO_BATCH_SIZE,           // Per-GPU Batch Size
+    GRAD_ACCUM_STEPS,           // Gradient Accumulation Steps
+    SEQUENCE_LENGTH_TRAIN,      // Max Sequence Length
+    TRAIN_EXECUTION_COUNT
+} TrainingExecutionConfig;
+
+
+// ===================================================================
+// 11. 推理量化策略 (Inference Quantization)
+// 模型压缩方法
+// ===================================================================
+typedef enum {
+    QUANT_METHOD,               // GPTQ, AWQ, GGUF, SpQR
+    QUANT_PRECISION,            // 4-bit, 5-bit, 8-bit
+    QUANT_GROUP_SIZE,           // Group Size (e.g., 128)
+    QUANT_ACT_ORDER,            // Act-Ordered (AWQ)
+    QUANT_F16_EMBED,            // F16 Embedding Table
+    INFERENCE_QUANT_COUNT
+} InferenceQuantization;
+
+
+// ===================================================================
+// 12. 推理执行引擎 (Inference Execution Engine)
+// 推理时系统优化
+// ===================================================================
+typedef enum {
+    INFERENCE_ENGINE,           // vLLM, TensorRT-LLM, TGI, LMDeploy
+    PAGED_ATTN_ENABLE,          // PagedAttention
+    KERNEL_FUSION_LEVEL,        // Fused Attention, Fused MLP
+    DYNAMIC_BATCHING_ON,        // Dynamic Batching
+    CONTINUOUS_BATCHING,        // Continuous Batching
+    MODEL_OFFLOAD_STRATEGY,     // CPU/Disk Offloading
+    INFERENCE_ENGINE_COUNT
+} InferenceExecutionEngine;
+
+
+// ===================================================================
+// 13. 评测基准 (Evaluation Benchmarks)
+// 标准化性能评估
+// ===================================================================
+typedef enum {
+    BENCHMARK_MMLU,             // MMLU Score
+    BENCHMARK_GSM8K,            // GSM8K Score
+    BENCHMARK_HUMAN_EVAL,       // HumanEval (Pass@1)
+    BENCHMARK_BBH,              // BIG-Bench Hard
+    BENCHMARK_TRUTHFULQA,       // TruthfulQA
+    BENCHMARK_TOXICITY,         // Toxicity Score
+    BENCHMARK_CODE_GEN,         // MBPP, LiveCodeBench
+    EVALUATION_BENCHMARK_COUNT
+} EvaluationBenchmarks;
+
+
+// ===================================================================
+// 14. 对齐与安全 (Alignment & Safety)
+// 价值观对齐与内容安全
+// ===================================================================
+typedef enum {
+    ALIGNMENT_METHOD,           // RLHF, DPO, RLAIF, KTO
+    SAFETY_CLASSIFIER_ON,       // Safety Filter (e.g., Llama Guard)
+    RED_TEAMING_RESULT,         // Red Teaming Pass Rate
+    CONTENT_MODERATION_RULES,   // Output Filtering Rules
+    BIAS_EVALUATION,            // Gender/Racial Bias Score
+    ALIGNMENT_SAFETY_COUNT
+} AlignmentSafety;
+
+
+// ===================================================================
+// 15. 硬件协同设计 (Hardware Co-Design)
+// 硬件适配与资源利用
+// ===================================================================
+typedef enum {
+    TARGET_GPU_ARCH,            // Ampere, Hopper, RDNA3
+    GPU_MEMORY_BANDWIDTH_UB,    // Memory-Bound Utilization Est.
+    TPU_OPTIMIZED,              // TPU-Compatible Layout
+    MODEL_MEMORY_FOOTPRINT_GB,  // Estimated Memory (GB)
+    FLOPS_UTILIZATION_EST,      // Compute Utilization Estimate
+    NVLINK_INTERCONNECT_BW,     // NVLink Bandwidth (GB/s)
+    HARDWARE_CO_DESIGN_COUNT
+} HardwareCoDesign;
+
+
+// ===================================================================
+// 综合结构体：LLM 设计本体总集
+// ===================================================================
+typedef struct {
+    InformationFlowControl     info_flow[INFO_FLOW_COUNT];
+    OptimizationDynamics       optim[OPTIM_DYNAMICS_COUNT];
+    RepresentationLearning     repr_learn[REPR_LEARNING_COUNT];
+    PositionEncodingExtrapolation pos_enc[POS_ENCODING_COUNT];
+    AttentionMechanism         attn_mech[ATTENTION_MECH_COUNT];
+    FeedForwardNetwork         ffn[FFN_ARCH_COUNT];
+    DataStrategy               data[data_strategy_count];
+    ModelArchitectureParameters arch_params[MODEL_ARCH_PARAMS_COUNT];
+    TrainingParallelism        train_parallel[TRAIN_PARALLEL_COUNT];
+    TrainingExecutionConfig    train_exec[TRAIN_EXECUTION_COUNT];
+    InferenceQuantization      infer_quant[INFERENCE_QUANT_COUNT];
+    InferenceExecutionEngine   infer_engine[INFERENCE_ENGINE_COUNT];
+    EvaluationBenchmarks       benchmark[EVALUATION_BENCHMARK_COUNT];
+    AlignmentSafety            align_safety[ALIGNMENT_SAFETY_COUNT];
+    HardwareCoDesign           hw_co_design[HARDWARE_CO_DESIGN_COUNT];
+} LLMDesignOntology;
+
+#endif // LLM_INDICATORS_REFINED_H
